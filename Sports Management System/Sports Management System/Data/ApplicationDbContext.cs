@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Sports_Management_System.Models;
 
 namespace Sports_Management_System.Data
 {
@@ -9,5 +10,7 @@ namespace Sports_Management_System.Data
             : base(options)
         {
         }
+
+        public DbSet<Game> Games { get; set; }
     }
 }
