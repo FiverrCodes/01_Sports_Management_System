@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Sports_Management_System.Models;
 using Sports_Management_System.Repository.IRepository;
 
 namespace Sports_Management_System.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class GamesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
