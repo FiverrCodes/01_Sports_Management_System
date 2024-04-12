@@ -3,7 +3,8 @@
     public interface IUnitOfWork
     {
         IGamesRepository Game { get; }
-
+        ICompetitorsRepository Competitor { get; }
+        ICompetitorGamesRepository CompetitorGame { get; }
         void Save();
     }
 }
