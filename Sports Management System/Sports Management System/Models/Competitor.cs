@@ -9,7 +9,7 @@ namespace Sports_Management_System.Models
         public Guid Id { get; set; }
 
         [Required]
-        [DisplayName("Full Name")]
+        [DisplayName("First Name")]
         public string FName { get; set; }
 
         [Required]
