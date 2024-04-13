@@ -39,6 +39,14 @@ namespace Sports_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CompetitorVm obj)
         {
+            ViewBag.Games = _unitOfWork.Game.GetAll().ToList();
+
+            if (obj.SelectedGameIds == null || obj.SelectedGameIds?.Count() == 0)
+            {
+                TempData["error"] = "Competitor should participate in at least one Game!";
+                return View(obj);
+            }
+
             if (ModelState.IsValid)
             {
                 _unitOfWork.Competitor.Add(obj.Competitor);
@@ -55,19 +63,12 @@ namespace Sports_Management_System.Controllers
                         });
                     }
                 }
-                else
-                {
-                    TempData["error"] = "Competitor should participate in at least one Game!";
-                    return View();
-                }
 
                 _unitOfWork.Save();
                 TempData["success"] = "Competitor Added Successfully!";
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Games = _unitOfWork.Game.GetAll().ToList();
             return View(obj);
         }
     }
