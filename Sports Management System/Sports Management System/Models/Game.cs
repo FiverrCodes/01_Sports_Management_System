@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Sports_Management_System.Models
@@ -23,5 +24,8 @@ namespace Sports_Management_System.Models
         public double? DurationInHours { get; set; }
 
         public string? Description { get; set; }
+
+        [ValidateNever]
+        public ICollection<CompetitorGame> CompetitorGames { get; set; }
     }
 }

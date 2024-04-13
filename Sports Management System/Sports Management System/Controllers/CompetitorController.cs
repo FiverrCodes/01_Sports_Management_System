@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Sports_Management_System.Models;
 using Sports_Management_System.Models.ViewModels;
 using Sports_Management_System.Repository.IRepository;
@@ -25,17 +24,51 @@ namespace Sports_Management_System.Controllers
 
         public IActionResult Create()
         {
-            CompetitorVm competitor = new CompetitorVm()
+            var viewModel = new CompetitorVm
             {
-                GamesList = _unitOfWork.Game.GetAll().Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString(),
-                }),
-                Competitor = new Competitor()
+                Competitor = new Competitor(),
+                SelectedGameIds = new List<Guid>()
             };
 
-            return View(competitor);
+            ViewBag.Games = _unitOfWork.Game.GetAll().OrderBy(x => x.Name).ToList();
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CompetitorVm obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _unitOfWork.Competitor.Add(obj.Competitor);
+
+                // Add CompetitorGame records for selected games
+                if (obj.SelectedGameIds.Count() > 0)
+                {
+                    foreach (var gameId in obj.SelectedGameIds)
+                    {
+                        _unitOfWork.CompetitorGame.Add(new CompetitorGame
+                        {
+                            CompetitorId = obj.Competitor.Id,
+                            GameId = gameId
+                        });
+                    }
+                }
+                else
+                {
+                    TempData["error"] = "Competitor should participate in at least one Game!";
+                    return View();
+                }
+
+                _unitOfWork.Save();
+                TempData["success"] = "Competitor Added Successfully!";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.Games = _unitOfWork.Game.GetAll().ToList();
+            return View(obj);
         }
     }
 }

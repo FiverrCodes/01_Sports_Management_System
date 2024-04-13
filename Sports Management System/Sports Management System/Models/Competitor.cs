@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Sports_Management_System.Models
@@ -16,11 +17,14 @@ namespace Sports_Management_System.Models
         public string Surname { get; set; }
 
         [Required]
-        public DateTimeOffset DOB { get; set; }
+        public DateOnly DOB { get; set; }
 
         [Required]
         public string Country { get; set; }
 
         public string? Bio { get; set; }
+
+        [ValidateNever]
+        public ICollection<CompetitorGame> CompetitorGames { get; set; }
     }
 }

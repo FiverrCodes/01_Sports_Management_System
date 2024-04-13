@@ -41,16 +41,18 @@
                     <label asp-for="Competitor.Bio" class="ms-2 mt-3"></label>
                     <span asp-validation-for="Competitor.Bio" class="text-danger"></span>
                 </div>
-                <div class="form-floating pt-3 col-12">
-                    <input type="checkbox" asp-items="@Model.GamesList" />
+
+                <div class="form pt-3 col-12">
+                    <label class="text-secondary" asp-for="SelectedGameIds">Games</label><br />
+                    @foreach (var game in ViewBag.Games)
+                    {
+                        <input type="checkbox" name="SelectedGameIds" value="@game.Id"
+                        @(Model.SelectedGameIds != null && Model.SelectedGameIds.Contains(game.Id) ? "checked" : "") />
+
+                        @game.Name <br />
+                    }
                 </div>
-                <div class="form-floating pt-3 col-12">
-                    <select asp-for="GameIds" asp-items="@Model.GamesList" class="form-select border-0 shadow" multiple>
-                        <option disabled selected>--Select Category--</option>
-                    </select>
-                    <label asp-for="GameIds" class="ms-2 mt-3"></label>
-                    <span asp-validation-for="GameIds" class="text-danger"></span>
-                </div>
+
                 <div class="row pt-3">
                     <div class="col-6 col-md-3">
                         <button type="submit" class="btn btn-dark form-control">Create</button>
