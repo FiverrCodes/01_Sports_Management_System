@@ -12,7 +12,9 @@ namespace Sports_Management_System.Data
         }
 
         public DbSet<Game> Games { get; set; }
+        public DbSet<Event> Events { get; set; }
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<CompetitorGame> CompetitorGames { get; set; }
+        public DbSet<CompetitorEvent> CompetitorEvents { get; set; }
     }
 }
