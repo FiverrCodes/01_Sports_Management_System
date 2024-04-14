@@ -8,6 +8,7 @@ namespace Sports_Management_System.Repository.IRepository
         IEnumerable<T> GetAll(Expression<Func<T, bool>> filter);
         IEnumerable<T> GetAll();
         void Remove(T entity);
+        void RemoveRange(IEnumerable<T> entity);
         void Add(T entity);
     }
 }

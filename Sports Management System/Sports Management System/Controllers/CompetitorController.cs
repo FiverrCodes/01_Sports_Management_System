@@ -22,8 +22,14 @@ namespace Sports_Management_System.Controllers
             return View(competitors);
         }
 
-        public IActionResult View(Guid id)
+        public IActionResult View(Guid? id)
         {
+            if (id == null || id == Guid.Empty)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
             var viewModel = new CompetitorVm
             {
                 Competitor = _unitOfWork.Competitor.Get(x => x.Id == id),
@@ -84,6 +90,72 @@ namespace Sports_Management_System.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(obj);
+        }
+
+        public IActionResult Edit(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
+            var viewModel = new CompetitorVm
+            {
+                Competitor = _unitOfWork.Competitor.Get(x => x.Id == id),
+                SelectedGameIds = _unitOfWork.CompetitorGame.GetAll(x => x.CompetitorId == id)
+                                             .Select(x => x.GameId).ToList()
+            };
+
+            if (viewModel.Competitor == null)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
+            ViewBag.Games = _unitOfWork.Game.GetAll().OrderBy(x => x.Name).ToList();
+
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult Edit(CompetitorVm obj)
+        {
+            ViewBag.Games = _unitOfWork.Game.GetAll().ToList();
+
+            if (obj.SelectedGameIds == null || obj.SelectedGameIds?.Count() == 0)
+            {
+                TempData["error"] = "Competitor should participate in at least one Game!";
+                return View(obj);
+            }
+
+            if (ModelState.IsValid)
+            {
+                _unitOfWork.Competitor.Update(obj.Competitor);
+
+                var existingCompetotorGames = _unitOfWork.CompetitorGame.GetAll(x => x.CompetitorId == obj.Competitor.Id)
+                                                                        .ToList();
+                if (existingCompetotorGames.Count() > 0)
+                {
+                    _unitOfWork.CompetitorGame.RemoveRange(existingCompetotorGames);
+                }
+
+                if (obj.SelectedGameIds.Count() > 0)
+                {
+                    foreach (var gameId in obj.SelectedGameIds)
+                    {
+                        _unitOfWork.CompetitorGame.Add(new CompetitorGame
+                        {
+                            CompetitorId = obj.Competitor.Id,
+                            GameId = gameId
+                        });
+                    }
+                }
+
+                _unitOfWork.Save();
+                TempData["success"] = "Competitor Updated Successfully!";
+                return RedirectToAction("Index");
+            }
+            return View();
         }
     }
 }
