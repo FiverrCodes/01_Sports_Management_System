@@ -1,5 +1,77 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Sports_Management_System.Models.ViewModels;
+@model CompetitorVm
+
 @{
+    ViewData["Title"] = "Delete Competitor";
+}
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-dark bg-gradiant ms-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white pt-1">Delete Competitor</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <div class="border p-3">
+                <div class="form-floating pt-2 col-12">
+                    <input asp-for="Competitor.FName" class="form-control border-0 shadow" disabled />
+                    <label asp-for="Competitor.FName" class="ms-2 mt-1"></label>
+                    <span asp-validation-for="Competitor.FName" class="text-danger"></span>
+                </div>
+                <div class="form-floating pt-3 col-12">
+                    <input asp-for="Competitor.Surname" class="form-control border-0 shadow" disabled />
+                    <label asp-for="Competitor.Surname" class="ms-2 mt-3"></label>
+                    <span asp-validation-for="Competitor.Surname" class="text-danger"></span>
+                </div>
+                <div class="form-floating pt-3 col-12">
+                    <input type="date" asp-for="Competitor.DOB" class="form-control border-0 shadow" disabled />
+                    <label asp-for="Competitor.DOB" class="ms-2 mt-3"></label>
+                    <span asp-validation-for="Competitor.DOB" class="text-danger"></span>
+                </div>
+                <div class="form-floating pt-3 col-12">
+                    <input asp-for="Competitor.Country" class="form-control border-0 shadow" disabled />
+                    <label asp-for="Competitor.Country" class="ms-2 mt-3"></label>
+                    <span asp-validation-for="Competitor.Country" class="text-danger"></span>
+                </div>
+                <div class="form-floating pt-3 col-12">
+                    <textarea asp-for="Competitor.Bio" class="form-control border-0 shadow" disabled></textarea>
+                    <label asp-for="Competitor.Bio" class="ms-2 mt-3"></label>
+                    <span asp-validation-for="Competitor.Bio" class="text-danger"></span>
+                </div>
+
+                @if (ViewBag.Games != null)
+                {
+                    <div class="form pt-3 col-12">
+                        <label class="text-secondary" asp-for="SelectedGameIds">Games</label><br />
+                        @foreach (var game in ViewBag.Games)
+                        {
+                            <input type="checkbox" name="SelectedGameIds" value="@game.Id" disabled
+                            @(Model.SelectedGameIds != null && Model.SelectedGameIds.Contains(game.Id) ? "checked" : "") />
+
+                            @game.Name <br />
+                        }
+                    </div>
+                }
+                <div class="row pt-3">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-danger form-control">Delete</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-asp-controller="Competitor" asp-action="index" class="btn btn-outline-dark form-control">
+                            Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
 }

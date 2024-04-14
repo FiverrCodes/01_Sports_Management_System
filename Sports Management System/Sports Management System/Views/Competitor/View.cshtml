@@ -27,7 +27,7 @@
                     <span asp-validation-for="Competitor.Surname" class="text-danger"></span>
                 </div>
                 <div class="form-floating pt-3 col-12">
-                    <input type="date" value="@DateTime.Today" asp-for="Competitor.DOB" class="form-control border-0 shadow" disabled />
+                    <input type="date" asp-for="Competitor.DOB" class="form-control border-0 shadow" disabled />
                     <label asp-for="Competitor.DOB" class="ms-2 mt-3"></label>
                     <span asp-validation-for="Competitor.DOB" class="text-danger"></span>
                 </div>

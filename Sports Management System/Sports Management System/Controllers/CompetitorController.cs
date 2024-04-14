@@ -37,6 +37,12 @@ namespace Sports_Management_System.Controllers
                                              .Select(x => x.GameId).ToList()
             };
 
+            if (viewModel.Competitor == null)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
             ViewBag.Games = _unitOfWork.Game.GetAll().OrderBy(x => x.Name).ToList();
 
             return View(viewModel);
@@ -54,7 +60,6 @@ namespace Sports_Management_System.Controllers
 
             return View(viewModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CompetitorVm obj)
@@ -156,6 +161,62 @@ namespace Sports_Management_System.Controllers
                 return RedirectToAction("Index");
             }
             return View();
+        }
+
+        public IActionResult Delete(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
+            var viewModel = new CompetitorVm
+            {
+                Competitor = _unitOfWork.Competitor.Get(x => x.Id == id),
+                SelectedGameIds = _unitOfWork.CompetitorGame.GetAll(x => x.CompetitorId == id)
+                                             .Select(x => x.GameId).ToList()
+            };
+
+            if (viewModel.Competitor == null)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
+            ViewBag.Games = _unitOfWork.Game.GetAll().OrderBy(x => x.Name).ToList();
+
+            return View(viewModel);
+        }
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePost(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
+            Competitor? competitor = _unitOfWork.Competitor.Get(x => x.Id == id);
+
+            if (competitor == null)
+            {
+                TempData["error"] = "Competitor does not exists!";
+                return NotFound();
+            }
+
+            _unitOfWork.Competitor.Remove(competitor);
+
+            var competitorGames = _unitOfWork.CompetitorGame.GetAll(x => x.CompetitorId == id).ToList();
+
+            if (competitorGames.Count() > 0)
+            {
+                _unitOfWork.CompetitorGame.RemoveRange(competitorGames);
+            }
+
+            _unitOfWork.Save();
+            TempData["success"] = "Game Deleted Successfully!";
+            return RedirectToAction("Index");
         }
     }
 }
