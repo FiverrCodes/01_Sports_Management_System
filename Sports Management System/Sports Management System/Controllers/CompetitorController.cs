@@ -22,6 +22,20 @@ namespace Sports_Management_System.Controllers
             return View(competitors);
         }
 
+        public IActionResult View(Guid id)
+        {
+            var viewModel = new CompetitorVm
+            {
+                Competitor = _unitOfWork.Competitor.Get(x => x.Id == id),
+                SelectedGameIds = _unitOfWork.CompetitorGame.GetAll(x => x.CompetitorId == id)
+                                             .Select(x => x.GameId).ToList()
+            };
+
+            ViewBag.Games = _unitOfWork.Game.GetAll().OrderBy(x => x.Name).ToList();
+
+            return View(viewModel);
+        }
+
         public IActionResult Create()
         {
             var viewModel = new CompetitorVm

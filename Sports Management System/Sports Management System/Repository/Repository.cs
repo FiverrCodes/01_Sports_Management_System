@@ -32,6 +32,12 @@ namespace Sports_Management_System.Repository
             return _dbSet.ToList();
         }
 
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> query = _dbSet.Where(filter);
+            return query.ToList();
+        }
+
         public void Remove(T entity)
         {
             _dbSet.Remove(entity);
