@@ -123,6 +123,14 @@ namespace Sports_Management_System.Controllers
             }
 
             _unitOfWork.Game.Remove(game);
+
+            var competitorGames = _unitOfWork.CompetitorGame.GetAll(x => x.GameId == id).ToList();
+
+            if (competitorGames.Count() > 0)
+            {
+                _unitOfWork.CompetitorGame.RemoveRange(competitorGames);
+            }
+
             _unitOfWork.Save();
             TempData["success"] = "Game Deleted Successfully!";
             return RedirectToAction("Index");
